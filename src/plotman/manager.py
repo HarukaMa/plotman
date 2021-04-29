@@ -92,14 +92,15 @@ def maybe_start_new_plot(dir_cfg, sched_cfg, plotting_cfg):
             tmpdir = max(rankable, key=operator.itemgetter(1))[0]
 
             # Select the dst dir least recently selected
-            dir2ph = { d:ph for (d, ph) in dstdirs_to_youngest_phase(jobs).items()
-                      if d in dir_cfg.dst }
-            unused_dirs = [d for d in dir_cfg.dst if d not in dir2ph.keys()]
-            dstdir = ''
-            if unused_dirs: 
-                dstdir = random.choice(unused_dirs)
-            else:
-                dstdir = max(dir2ph, key=dir2ph.get)
+            # dir2ph = { d:ph for (d, ph) in dstdirs_to_youngest_phase(jobs).items()
+            #           if d in dir_cfg.dst }
+            # unused_dirs = [d for d in dir_cfg.dst if d not in dir2ph.keys()]
+            # dstdir = ''
+            # if unused_dirs:
+            #     dstdir = random.choice(unused_dirs)
+            # else:
+            #     dstdir = max(dir2ph, key=dir2ph.get)
+            dstdir = tmpdir
 
             logfile = os.path.join(
                 dir_cfg.log, pendulum.now().isoformat(timespec='microseconds').replace(':', '_') + '.log'
