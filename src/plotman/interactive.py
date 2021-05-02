@@ -74,6 +74,8 @@ def curses_main(stdscr):
     plotting_status = '<startup>'    # todo rename these msg?
     archiving_status = '<startup>'
 
+    curses.use_default_colors() # Use default colors of the terminal.
+
     stdscr.nodelay(True)  # make getch() non-blocking
     stdscr.timeout(2000)
 
