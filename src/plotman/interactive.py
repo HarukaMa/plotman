@@ -67,9 +67,9 @@ def curses_main(stdscr):
 
     cfg = configuration.get_validated_configs()
 
-    plotting_active = True
+    plotting_active = False
     archiving_configured = cfg.directories.archive is not None
-    archiving_active = archiving_configured
+    archiving_active = False
 
     plotting_status = '<startup>'    # todo rename these msg?
     archiving_status = '<startup>'
