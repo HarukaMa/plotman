@@ -242,7 +242,7 @@ class Job:
                     current_bucket = 0
 
                 # Bucket sort: "Bucket 0 uniform sort." or "Bucket 47 QS."
-                m = le.match(r'^.*Bucket (\d+) ', line)
+                m = re.match(r'^.*Bucket (\d+) ', line)
                 if m:
                     current_bucket = max(current_bucket, int(m.group(1)))
 

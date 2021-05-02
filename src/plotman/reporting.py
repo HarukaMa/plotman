@@ -85,8 +85,14 @@ def status_report(jobs, width, height=None, tmp_prefix='', dst_prefix=''):
         headings.insert(0, '#')
     tab.header(headings)
     tab.set_cols_dtype('t' * len(headings))
-    tab.set_cols_align('r' * len(headings))
-    tab.set_header_align('r' * len(headings))
+
+    col_align = ['r'] * len(headings)
+    # Use left align for phase column
+    col_align[headings.index('phase')] = 'l'
+
+    tab.set_cols_align(col_align)
+    tab.set_header_align(col_align)
+
     for i, j in enumerate(sorted(jobs, key=job.Job.get_time_wall)):
         # Elipsis row
         if abbreviate_jobs_list and i == n_begin_rows:
