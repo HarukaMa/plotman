@@ -211,6 +211,9 @@ class Job:
         # Phase 4 subphases are <started>
         phase_subphases = {}
 
+        # Additional, track the bucket is being sorted.
+        current_bucket = -1
+
         with open(self.logfile, 'r') as f:
             for line in f:
                 # "Starting phase 1/4: Forward Propagation into tmp files... Sat Oct 31 11:27:04 2020"
@@ -218,21 +221,31 @@ class Job:
                 if m:
                     phase = int(m.group(1))
                     phase_subphases[phase] = 0
+                    current_bucket = 0
 
                 # Phase 1: "Computing table 2"
                 m = re.match(r'^Computing table (\d).*', line)
                 if m:
                     phase_subphases[1] = max(phase_subphases[1], int(m.group(1)))
+                    current_bucket = 0
 
                 # Phase 2: "Backpropagating on table 2"
                 m = re.match(r'^Backpropagating on table (\d).*', line)
                 if m:
                     phase_subphases[2] = max(phase_subphases[2], 7 - int(m.group(1)))
+                    current_bucket = -1
 
                 # Phase 3: "Compressing tables 4 and 5"
                 m = re.match(r'^Compressing tables (\d) and (\d).*', line)
                 if m:
                     phase_subphases[3] = max(phase_subphases[3], int(m.group(1)))
+                    current_bucket = 0
+
+                # Bucket sort: "Bucket 0 uniform sort." or "Bucket 47 QS."
+                m = le.match(r'^.*Bucket (\d+) ', line)
+                if m:
+                    current_bucket = max(current_bucket, int(m.group(1)))
+
 
                 # TODO also collect timing info:
 
@@ -251,6 +264,8 @@ class Job:
             self.phase = (phase, phase_subphases[phase])
         else:
             self.phase = (0, 0)
+
+        self.current_bucket = current_bucket if current_bucket >= 0 else None
 
     def progress(self):
         '''Return a 2-tuple with the job phase and subphase (by reading the logfile)'''

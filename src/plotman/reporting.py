@@ -13,10 +13,13 @@ def abbr_path(path, putative_prefix):
     else:
         return path
     
-def phase_str(phase_pair):
+def phase_str(phase_pair, current_bucket=None):
     (ph, subph) = phase_pair
-    return ((str(ph) if ph is not None else '?') + ':'
+    ret = ((str(ph) if ph is not None else '?') + ':'
             + (str(subph) if subph is not None else '?'))
+    if current_bucket:
+        ret += '.' + str(current_bucket)
+    return ret
 
 def phases_str(phases, max_num=None):
     '''Take a list of phase-subphase pairs and return them as a compact string'''
@@ -101,7 +104,7 @@ def status_report(jobs, width, height=None, tmp_prefix='', dst_prefix=''):
                         abbr_path(j.tmpdir, tmp_prefix),
                         abbr_path(j.dstdir, dst_prefix),
                         plot_util.time_format(j.get_time_wall()),
-                        phase_str(j.progress()),
+                        phase_str(j.progress(), j.current_bucket),
                         plot_util.human_format(j.get_tmp_usage(), 0),
                         j.proc.pid,
                         j.get_run_status(),
