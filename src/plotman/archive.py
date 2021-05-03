@@ -151,7 +151,7 @@ def archive(dir_cfg, all_jobs):
     # TODO: filter drives mounted RO
 
     #
-    # Pick first archive dir with sufficient space
+    # Pick random archive dir in top 32
     #
     archdir_freebytes = get_archdir_freebytes(dir_cfg.archive)
     if not archdir_freebytes:
@@ -161,7 +161,7 @@ def archive(dir_cfg, all_jobs):
     available = [(d, space) for (d, space) in archdir_freebytes.items() if 
                  space > 1.2 * plot_util.get_k32_plotsize()]
     if len(available) > 0:
-        (archdir, freespace) = random.shuffle(sorted(available)[:32])[0]
+        (archdir, freespace) = random.choice(sorted(available)[:32])
 
     if not archdir:
         return(False, 'No archive directories found with enough free space')
