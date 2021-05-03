@@ -140,6 +140,10 @@ def main():
     if args.cmd == 'plot':
         print('...starting plot loop')
         while True:
+
+            # Tydus: reload config every loop.
+            cfg = configuration.get_validated_configs()
+
             wait_reason = manager.maybe_start_new_plot(cfg.directories, cfg.scheduling, cfg.plotting)
 
             # TODO: report this via a channel that can be polled on demand, so we don't spam the console
