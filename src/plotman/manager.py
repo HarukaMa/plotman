@@ -131,6 +131,7 @@ def maybe_start_new_plot(dir_cfg, sched_cfg, plotting_cfg):
             p = subprocess.Popen(plot_args,
                 stdout=open(logfile, 'w'),
                 stderr=subprocess.STDOUT,
+                stdin=subprocess.DEVNULL,
                 start_new_session=True)
 
             psutil.Process(p.pid).nice(15)
