@@ -161,7 +161,11 @@ def archive(dir_cfg, all_jobs):
     available = [(d, space) for (d, space) in archdir_freebytes.items() if 
                  space > 3 * plot_util.get_k32_plotsize()]
     if len(available) > 0:
-        (archdir, freespace) = random.choice(sorted(available)[:50])
+        (archdir, freespace) = random.choice(sorted(
+            available,
+            key=lambda x: x[1],
+            reverse=True,
+        )[:50])
 
     if not archdir:
         return(False, 'No archive directories found with enough free space')
