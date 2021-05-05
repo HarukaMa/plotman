@@ -79,7 +79,7 @@ def status_report(jobs, width, height=None, tmp_prefix='', dst_prefix=''):
         n_end_rows = n_rows - n_begin_rows
 
     tab = tt.Texttable()
-    headings = ['plot id', 'k', 'tmp', 'dst', 'wall', 'phase', 'tmp',
+    headings = ['plot id', 'k', 'tmp', 'wall', 'phase', 'tmp',
             'pid', 'stat', 'mem', 'user', 'sys', 'io']
     if height:
         headings.insert(0, '#')
@@ -108,7 +108,6 @@ def status_report(jobs, width, height=None, tmp_prefix='', dst_prefix=''):
                     row = [j.plot_id[:8],
                         j.k,
                         abbr_path(j.tmpdir, tmp_prefix),
-                        abbr_path(j.dstdir, dst_prefix),
                         plot_util.time_format(j.get_time_wall()),
                         phase_str(j.progress(), j.current_bucket),
                         plot_util.human_format(j.get_tmp_usage(), 0),
