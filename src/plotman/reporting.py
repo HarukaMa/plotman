@@ -79,7 +79,7 @@ def status_report(jobs, width, height=None, tmp_prefix='', dst_prefix=''):
         n_end_rows = n_rows - n_begin_rows
 
     tab = tt.Texttable()
-    headings = ['plot id', 'k', 'tmp', 'wall', 'phase', 'tmp',
+    headings = ['plot id', 'tmp', 'wall', 'phase', 'tmp',
             'pid', 'stat', 'mem', 'user', 'sys', 'io']
     if height:
         headings.insert(0, '#')
@@ -87,7 +87,8 @@ def status_report(jobs, width, height=None, tmp_prefix='', dst_prefix=''):
     tab.set_cols_dtype('t' * len(headings))
 
     col_align = ['r'] * len(headings)
-    # Use left align for phase column
+    # Use left align for phase and tmp column
+    col_align[headings.index('tmp')] = 'l'
     col_align[headings.index('phase')] = 'l'
 
     tab.set_cols_align(col_align)
@@ -106,7 +107,6 @@ def status_report(jobs, width, height=None, tmp_prefix='', dst_prefix=''):
             try:
                 with j.proc.oneshot():
                     row = [j.plot_id[:8],
-                        j.k,
                         abbr_path(j.tmpdir, tmp_prefix),
                         plot_util.time_format(j.get_time_wall()),
                         phase_str(j.progress(), j.current_bucket),
