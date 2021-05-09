@@ -165,7 +165,7 @@ def main():
 
         # Status report
         if args.cmd == 'status':
-            print(reporting.status_report(jobs, get_term_width()))
+            print(reporting.status_report(jobs, 160))
 
         # Directories report
         elif args.cmd == 'dirs':
