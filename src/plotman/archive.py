@@ -159,7 +159,7 @@ def archive(dir_cfg, all_jobs):
         candidates.append((priority, dir_plots[0]))
 
     # sort;
-    sort(candidates, reverse=True, key=lambda x: x[0])
+    list.sort(candidates, reverse=True, key=lambda x: x[0])
 
     # then select the first one which is not being tranferred.
     def job_exists(plot):
