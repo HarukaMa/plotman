@@ -26,7 +26,7 @@ def spawn_archive_process(dir_cfg, all_jobs):
     # even though the scheduler should only run one at a time.
     arch_jobs = get_running_archive_jobs(dir_cfg.archive)
     
-    if not arch_jobs:
+    if len(arch_jobs) < dir_cfg.max_archive_jobs:
         (should_start, status_or_cmd) = archive(dir_cfg, all_jobs)
         if not should_start:
             archiving_status = status_or_cmd
@@ -131,18 +131,48 @@ def archive(dir_cfg, all_jobs):
         return (False, "No 'archive' settings declared in plotman.yaml")
 
     dir2ph = manager.dstdirs_to_furthest_phase(all_jobs)
-    best_priority = -100000000
-    chosen_plot = None
 
+    # Tydus: sort dest dirs instead of finding the best one
+    #best_priority = -100000000
+    #chosen_plot = None
+    #
+    #for d in dir_cfg.dst:
+    #    ph = dir2ph.get(d, (0, 0))
+    #    dir_plots = plot_util.list_k32_plots(d)
+    #    gb_free = plot_util.df_b(d) / plot_util.GB
+    #    n_plots = len(dir_plots)
+    #    priority = compute_priority(ph, gb_free, n_plots) 
+    #    if priority >= best_priority and dir_plots:
+    #        best_priority = priority
+    #        chosen_plot = dir_plots[0]
+
+    # Find all candidates; 
+    candidates = []
     for d in dir_cfg.dst:
-        ph = dir2ph.get(d, (0, 0))
         dir_plots = plot_util.list_k32_plots(d)
+        if not dir_plots: continue
+
+        ph = dir2ph.get(d, (0, 0))
         gb_free = plot_util.df_b(d) / plot_util.GB
         n_plots = len(dir_plots)
         priority = compute_priority(ph, gb_free, n_plots) 
-        if priority >= best_priority and dir_plots:
-            best_priority = priority
-            chosen_plot = dir_plots[0]
+        candidates.append((priority, dir_plots[0]))
+
+    # sort;
+    sort(candidates, reverse=True, key=lambda x: x[0])
+
+    # then select the first one which is not being tranferred.
+    def job_exists(plot):
+        for proc in psutil.process_iter(['pid', 'name']):
+            with contextlib.suppress(psutil.NoSuchProcess):
+                if proc.name() == 'rsync' and plot in proc.cmdline(): return True
+        return False
+
+    chosen_plot = None
+    for priority, plot in candidates:
+        if not job_exists(plot):
+            chosen_plot = plot
+            break
 
     if not chosen_plot:
         return (False, 'No plots found')
@@ -151,7 +181,7 @@ def archive(dir_cfg, all_jobs):
     # TODO: filter drives mounted RO
 
     #
-    # Pick random archive dir in top 32
+    # Pick random archive dir in top 50
     #
     archdir_freebytes = get_archdir_freebytes(dir_cfg.archive)
     if not archdir_freebytes:

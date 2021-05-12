@@ -59,6 +59,7 @@ class Directories:
     tmp2: Optional[str] = None
     tmp_overrides: Optional[Dict[str, TmpOverrides]] = None
     archive: Optional[Archive] = None
+    max_archive_jobs: int = 1
 
 @dataclass
 class Scheduling:
