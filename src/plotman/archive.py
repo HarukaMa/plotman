@@ -26,7 +26,7 @@ def spawn_archive_process(dir_cfg, all_jobs):
     # even though the scheduler should only run one at a time.
     arch_jobs = get_running_archive_jobs(dir_cfg.archive)
     
-    if len(arch_jobs) < dir_cfg.max_archive_jobs:
+    if len(arch_jobs) < dir_cfg.archive.max_jobs:
         (should_start, status_or_cmd) = archive(dir_cfg, all_jobs)
         if not should_start:
             archiving_status = status_or_cmd

@@ -46,6 +46,7 @@ class Archive:
     rsyncd_host: str
     rsyncd_user: str
     index: int = 0  # If not explicit, "index" will default to 0
+    max_jobs: int = 1
 
 @dataclass
 class TmpOverrides:
@@ -59,7 +60,6 @@ class Directories:
     tmp2: Optional[str] = None
     tmp_overrides: Optional[Dict[str, TmpOverrides]] = None
     archive: Optional[Archive] = None
-    max_archive_jobs: int = 1
 
 @dataclass
 class Scheduling:
