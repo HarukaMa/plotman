@@ -244,7 +244,7 @@ class Job:
                 # Bucket sort: "Bucket 0 uniform sort." or "Bucket 47 QS."
                 m = re.match(r'^.*Bucket (\d+) ', line)
                 if m:
-                    current_bucket = max(current_bucket, int(m.group(1)))
+                    current_bucket = int(m.group(1))
 
 
                 # TODO also collect timing info:
